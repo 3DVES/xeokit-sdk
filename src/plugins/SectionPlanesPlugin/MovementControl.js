@@ -317,9 +317,12 @@ class MovementControl {
             if (closestPointOnAxis(canvasPos, tempVec3)) {
               const elementCenter = this.getOriginalPos(this.element)
               math.subVec3(tempVec3, initOffset, tempVec3);
-
+              const newOffset = math.vec3();
+              math.subVec3(pos, tempVec3, newOffset);
+              math.mulVec3Scalar(newOffset, -1, newOffset)
+              console.log('currentCenter', elementCenter)
               setPos(tempVec3);
-              this.element.translate({ translation: tempVec3, originLocalPivot: elementCenter, rotationPivot: elementCenter, localAABB: this.element.aabb });
+              translateElement(this.element, rgb, newOffset, elementCenter);
             }
           });
         }
@@ -357,7 +360,7 @@ class MovementControl {
             const q1 = math.vec4();
             const q2 = math.vec4();
             const angleAxis = math.vec4(4);
-            const engles = math.vec3();
+            const angles = math.vec3();
 
             angleAxis[0] = rgb[0];
             angleAxis[1] = rgb[1];
@@ -370,22 +373,16 @@ class MovementControl {
             console.log("rotation:ANGLE", angle)
             console.log("rotation:angelSum", angelSum)
             console.log("rotation:EULERAngle", rotationEulerAngle)
-            math.mulVec3Scalar(rgb, angle, engles)
+            math.mulVec3Scalar(rgb, angle, angles)
             const elementDimensions = this.element.aabb;
             const gizmoPosition = math.getAABB3Center(elementDimensions);
             console.log('gizmoPosition:   ', gizmoPosition)
             this.element.rotate({
-              // rotation: [0, 0, angle],
-              rotation: q2,
-              // rotation: engles,
+              rotation: angles,
               pivot: pos,
               originLocalPivot: pos, localAABB: this.element.aabb,
               isAllModel: false
             });
-            // this.element.rotate({
-            //   radians: rotationEulerAngle,
-            //   pivot: pos,
-            // });
             lastRotation = rotation;
           };
         }
