@@ -673,9 +673,12 @@ export class SceneModelEntity {
      * @type {Material}
      */
     set capMaterial(value) {
-        if(!this.scene.readableGeometryEnabled) return;
-        this._capMaterial = value instanceof Material ? value : null;
-        this.scene._capMaterialUpdated(this.id, this.model.id);
+        if (this.scene.readableGeometryEnabled) {
+            this._capMaterial = value;
+            this.scene._sectionCaps._onCapMaterialUpdated(this);
+        } else {
+            throw "The `capMaterial` assignment requires `Viewer::readableGeometryEnabled` to be `true`";
+        }
     }
 
     /**
@@ -699,6 +702,32 @@ export class SceneModelEntity {
         for (let i = 0, len = this.meshes.length; i < len; i++) {
             this.meshes[i].getEachIndex(callback)
         }
+    }
+
+    getGeometryData() {
+        let positionsBase = 0;
+        const positions = [];
+        const indices = [];
+
+        for (let i = 0, len = this.meshes.length; i < len; i++) {
+            const mesh = this.meshes[i];
+
+            if (mesh.layer.readGeometryData) {
+                const meshGeom = mesh.layer.readGeometryData(mesh.portionId);
+
+                for (let j = 0, len = meshGeom.indices.length; j < len; j++) {
+                    indices.push(meshGeom.indices[j]+positionsBase);
+                }
+
+                for (let j = 0, len = meshGeom.positions.length; j < len; j++) {
+                    positions.push(meshGeom.positions[j]);
+                }
+
+                positionsBase += meshGeom.positions.length / 3;
+            }
+        }
+
+        return { indices, positions };
     }
 
     /**

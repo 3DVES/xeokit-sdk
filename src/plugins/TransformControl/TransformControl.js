@@ -303,7 +303,7 @@ class TransformControl {
                             math.subVec3(tempVec3, initOffset, tempVec3);
                             this._setPosition(tempVec3);
                             if (this._handlers) {
-                                this._handlers.setPosition(tempVec3);
+                                this._handlers.onPosition(tempVec3);
                             }
                         }
                     });
@@ -331,7 +331,7 @@ class TransformControl {
                         const rotation = rotationFromCanvasPos(canvasPos);
                         rootNode.rotate(rgb, (rotation - lastRotation) * 180 / Math.PI);
                         if (this._handlers) {
-                            this._handlers.setQuaternion(rootNode.quaternion);
+                            this._handlers.onQuaternion(rootNode.quaternion);
                         }
                         lastRotation = rotation;
                     };
@@ -399,8 +399,8 @@ class TransformControl {
             const setRootNodeScale = size => {
                 if (rootNode.scale[0] !== size) {
                     rootNode.scale = [size, size, size];
-                    if (this._handlers && this._handlers.setScreenScale) {
-                        this._handlers.setScreenScale(rootNode.scale);
+                    if (this._handlers && this._handlers.onScreenScale) {
+                        this._handlers.onScreenScale(rootNode.scale);
                     }
                 }
             };
@@ -569,12 +569,12 @@ class TransformControl {
     setHandlers(handlers) {
         Object.values(this._displayMeshes).forEach(m => m.visible = !!handlers);
         this._handlers = handlers;
-        this._displayMeshes.x.setPositionActive(handlers && handlers.setPosition);
-        this._displayMeshes.y.setPositionActive(handlers && handlers.setPosition);
-        this._displayMeshes.z.setPositionActive(handlers && handlers.setPosition);
-        this._displayMeshes.x.setRotationActive(handlers && handlers.setQuaternion);
-        this._displayMeshes.y.setRotationActive(handlers && handlers.setQuaternion);
-        this._displayMeshes.z.setRotationActive(handlers && handlers.setQuaternion);
+        this._displayMeshes.x.setPositionActive(handlers && handlers.onPosition);
+        this._displayMeshes.y.setPositionActive(handlers && handlers.onPosition);
+        this._displayMeshes.z.setPositionActive(handlers && handlers.onPosition);
+        this._displayMeshes.x.setRotationActive(handlers && handlers.onQuaternion);
+        this._displayMeshes.y.setRotationActive(handlers && handlers.onQuaternion);
+        this._displayMeshes.z.setRotationActive(handlers && handlers.onQuaternion);
     }
 
     /**

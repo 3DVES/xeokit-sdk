@@ -329,7 +329,8 @@ class SectionPlanesPlugin extends Plugin {
                                      })(),
                                      setQuaternion: q => { rootNode.quaternion = q; },
                                      setScale: s => { rootNode.scale = s; },
-                                     setVisible: v => { rootNode.visible = v; }
+                                     setVisible: v => { rootNode.visible = v; },
+                                     destroy: () => { rootNode.destroy() }
                                  };
                              })();
                              let unbindSectionPlane = () => { };
@@ -348,6 +349,7 @@ class SectionPlanesPlugin extends Plugin {
                                  _destroy: () => {
                                      unbindSectionPlane();
                                      ctrl.destroy();
+                                     planeRoot.destroy();
                                  },
                                  setCulled:  c => { culled = c;  updateVisible(); },
                                  setVisible: v => { visible = v; updateVisible(); },
@@ -356,16 +358,16 @@ class SectionPlanesPlugin extends Plugin {
                                      if (sectionPlane) {
                                          let ignoreNextSectionPlaneDirUpdate = false;
                                          handlers = {
-                                             setPosition:   p => {
+                                             onPosition:   p => {
                                                  planeRoot.setPosition(p);
                                                  sectionPlane.pos = p;
                                              },
-                                             setQuaternion: q => {
+                                             onQuaternion: q => {
                                                  planeRoot.setQuaternion(q);
                                                  ignoreNextSectionPlaneDirUpdate = true;
                                                  sectionPlane.quaternion = q;
                                              },
-                                             setScreenScale: s => {
+                                             onScreenScale: s => {
                                                  planeRoot.setScale(s);
                                              }
                                          };

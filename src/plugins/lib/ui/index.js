@@ -133,15 +133,21 @@ const clipSegment = (scene, parentElement, start, end, canvasStart, canvasEnd) =
     for (let i = 0; i < 2; ++i) {
         const denom = p1[i] - p0[i];
 
-        const l = (-p0[3] - p0[i]) / denom;
-        const r = ( p0[3] - p0[i]) / denom;
+        const l = (-1 - p0[i]) / denom;
+        const r = ( 1 - p0[i]) / denom;
 
         if (denom > 0) {
             t_min = Math.max(t_min, l);
             t_max = Math.min(t_max, r);
-        } else {
+        } else if (denom < 0) {
             t_min = Math.max(t_min, r);
             t_max = Math.min(t_max, l);
+        } else {
+            if (p0[0] < -1) {
+                t_min = -window.Infinity;
+            } else if (p0[0] > 1) {
+                t_max = window.Infinity;
+            }
         }
     }
 
@@ -243,6 +249,8 @@ export class Dot3D extends Marker {
         const onProjMatrix = camera.on("projMatrix", updateDotPos);
         const onCanvasBnd  = scene.canvas.on("boundary", updateDotPos);
         const planesUpdate = scene.on("sectionPlaneUpdated", updateDotPos);
+        const planeCreated = scene.on("sectionPlaneCreated", updateDotPos);
+        const planeDestroyed = scene.on("sectionPlaneDestroyed", updateDotPos);
 
         this._updatePosition = updateDotPos;
 
@@ -251,6 +259,8 @@ export class Dot3D extends Marker {
             camera.off(onProjMatrix);
             scene.canvas.off(onCanvasBnd);
             scene.off(planesUpdate);
+            scene.off(planeCreated);
+            scene.off(planeDestroyed);
             this._dot.destroy();
         };
     }
@@ -360,12 +370,16 @@ export class Label3D {
         const onProjMatrix = camera.on("projMatrix", this._updatePositions);
         const onCanvasBnd  = scene.canvas.on("boundary", this._updatePositions);
         const planesUpdate = scene.on("sectionPlaneUpdated", this._updatePositions);
+        const planeCreated = scene.on("sectionPlaneCreated", this._updatePositions);
+        const planeDestroyed = scene.on("sectionPlaneDestroyed", this._updatePositions);
 
         this._cleanup = () => {
             camera.off(onViewMatrix);
             camera.off(onProjMatrix);
             scene.canvas.off(onCanvasBnd);
             scene.off(planesUpdate);
+            scene.off(planeCreated);
+            scene.off(planeDestroyed);
             this._label.destroy();
         };
     }
@@ -444,12 +458,16 @@ export class Wire3D {
         const onProjMatrix = camera.on("projMatrix", this._updatePositions);
         const onCanvasBnd  = scene.canvas.on("boundary", this._updatePositions);
         const planesUpdate = scene.on("sectionPlaneUpdated", this._updatePositions);
+        const planeCreated = scene.on("sectionPlaneCreated", this._updatePositions);
+        const planeDestroyed = scene.on("sectionPlaneDestroyed", this._updatePositions);
 
         this._cleanup = () => {
             camera.off(onViewMatrix);
             camera.off(onProjMatrix);
             scene.canvas.off(onCanvasBnd);
             scene.off(planesUpdate);
+            scene.off(planeCreated);
+            scene.off(planeDestroyed);
             this._wire.destroy();
         };
     }

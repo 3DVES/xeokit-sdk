@@ -1,5 +1,96 @@
 ## xeokit-sdk Changelog
 
+# [v2.6.95](https://github.com/xeokit/xeokit-sdk/compare/v2.6.94...v2.6.95)
+
+### 18 November 2025
+
+-  Added memory leak test example
+-  XEOK-378 Rectifies some inaccuracies related to SectionCaps generation.
+-  BREAKING CHANGE: XEOK-361 Improves SectionCaps feature feedback (by throwing an exception) if Entity::capMaterial assigned to when readableGeometryEnabled: false.
+Code that previously would silently fail will now throw an error.
+This should make the readableGeometryEnabled requirement more clear.
+
+# [v2.6.94](https://github.com/xeokit/xeokit-sdk/compare/v2.6.93...v2.6.94)
+
+### 03 November 2025
+
+XEOK-377 Consider DirLight.space="space" same as "world" and fix DirLight.space documentation [#1977](https://github.com/xeokit/xeokit-sdk/pull/1977)
+
+# [v2.6.93](https://github.com/xeokit/xeokit-sdk/compare/v2.6.92...v2.6.93)
+
+### 20 October 2025
+
+IMPORTANT: Please read the details in the comment at https://github.com/xeokit/xeokit-sdk/pull/1850#issuecomment-3397906988
+Renderers refactor - a large change, but shouldn't require any integration effort in user code, unless it relied on `TrianglesColorTextureRenderer`'s color texture.
+
+# [v2.6.92](https://github.com/xeokit/xeokit-sdk/compare/v2.6.91...v2.6.92)
+
+### 16 October 2025
+
+XCD-391 Implement labelStringFormat [#1940](https://github.com/xeokit/xeokit-sdk/pull/1967)
+
+# [v2.6.91](https://github.com/xeokit/xeokit-sdk/compare/v2.6.90...v2.6.91)
+
+### 06 October 2025
+
+Update LICENSE and CONTRIBUTING.md
+chore: upgrade loaders.gl and cxconverter.
+feat: set `__XEOKIT__` in window object [#1947](https://github.com/xeokit/xeokit-sdk/pull/1947)
+fix: add error message for Device Orientation permission and improve user feedback [#1948](https://github.com/xeokit/xeokit-sdk/pull/1948
+XEOK-372 Import external deps from a common location [#1954](https://github.com/xeokit/xeokit-sdk/pull/1954)
+XCD-386 Fix zoom speed after empty space zoom [#1958](https://github.com/xeokit/xeokit-sdk/pull/1958)
+XCD-383 Fix extreme zoom-out/in with touch control [#1957](https://github.com/xeokit/xeokit-sdk/pull/1957)
+XEOK-373 Declare ViewerConfiguration::readableGeometryEnabled [#1962](https://github.com/xeokit/xeokit-sdk/pull/1962)
+
+# [v2.6.90](https://github.com/xeokit/xeokit-sdk/compare/v2.6.89...v2.6.90)
+
+### 29 August 2025
+
+XCD-369 Fix transparents rendering when using isUI meshes, and add a test-scene [#1940](https://github.com/xeokit/xeokit-sdk/pull/1940)
+
+# [v2.6.89](https://github.com/xeokit/xeokit-sdk/compare/v2.6.88...v2.6.89)
+
+### 26 August 2025
+
+fix(XCD-350): improve clipping logic in clipSegment function for paralel lines [#1937](https://github.com/xeokit/xeokit-sdk/pull/1937)
+
+# [v2.6.88](https://github.com/xeokit/xeokit-sdk/compare/v2.6.87...v2.6.88)
+
+### 11 August 2025
+
+- fix: Update links in README and index.html for consistency; change image source in getSnapshot example
+- feat: XCD-343 Add touch event support for NavCube interactions
+- XCD-349 Remove rootNode when destroy
+- refactor: update type definitions for touchPointSelector to be generic
+- fix(XEOK-168): DotBIMLoaderPlugin - update mesh ID generation to include dbMeshId for uniqueness
+- refactor(XEOK-321) : remove @creooxag/cxconverter-dependency
+- Xeok 168 errors inside examples set 1
+
+# [v2.6.87](https://github.com/xeokit/xeokit-sdk/compare/v2.6.86...v2.6.87)
+
+### 31 July 2025
+
+- XCD-345 Don't trigger touch rightClick when cameraControl is not active - [#1927](https://github.com/xeokit/xeokit-sdk/pull/1927)
+
+# [v2.6.86](https://github.com/xeokit/xeokit-sdk/compare/v2.6.85...v2.6.86)
+
+### 29 July 2025
+
+- XCD-332 Change addContextMenuListener to listen to touch events on iPads
+- XCD-341 Apply x and y scale for billboards
+
+# [v2.6.84](https://github.com/xeokit/xeokit-sdk/compare/v2.6.83...v2.6.84)
+
+### 16 July 2025
+
+- FIX ContextMenu horizontal position if parented by document.body (XEOK-306)
+
+# [v2.6.83](https://github.com/xeokit/xeokit-sdk/compare/v2.6.82...v2.6.83)
+
+### 8 July 2025
+
+- Technical release aiming to rollout new CI mechanism. No other code changes.
+
 # [v2.6.67](https://github.com/xeokit/xeokit-sdk/compare/v2.6.66...v2.6.67)
 
 ### 27 February 2025

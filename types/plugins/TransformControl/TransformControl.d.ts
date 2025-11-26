@@ -2,13 +2,13 @@ import { Viewer } from "../../viewer";
 
 export declare type TransformControlHandlers = {
     /** Optional callback for translation change. */
-    setPosition?: (position: number[]) => void;
+    onPosition?: (position: number[]) => void;
 
     /** Optional callback for rotation change. */
-    setQuaternion?: (quaternion: number[]) => void;
+    onQuaternion?: (quaternion: number[]) => void;
 
     /** Optional callback for screen scale change. */
-    setScreenScale?: (scale: number[]) => void;
+    onScreenScale?: (scale: number[]) => void;
 };
 
 /**
