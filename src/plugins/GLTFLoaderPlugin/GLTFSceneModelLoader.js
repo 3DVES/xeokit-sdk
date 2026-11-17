@@ -18,6 +18,13 @@ import {
     RepeatWrapping
 } from "../../viewer/scene/constants/constants.js";
 
+const iota = n => {
+    const ret = [ ];
+    for (let i = 0; i < n; ++i)
+        ret.push(i);
+    return ret;
+};
+
 /**
  * @private
  */
@@ -101,10 +108,12 @@ function getBasePath(src) {
 function parseGLTF(plugin, src, gltf, metaModelJSON, options, sceneModel, ok, error) {
     const spinner = plugin.viewer.scene.canvas.spinner;
     spinner.processes++;
-    parse(gltf, GLTFLoader, {
+    const loadersGl = options.loadersGl;
+    (loadersGl ? loadersGl.core.parse : parse)(gltf, loadersGl ? loadersGl.gltf.GLTFLoader : GLTFLoader, {
+        ...(options.parseOptions || { }),
         baseUri: options.basePath
     }).then((gltfData) => {
-        const processedGLTF = postProcessGLTF(gltfData);
+        const processedGLTF = (loadersGl ? loadersGl.gltf.postProcessGLTF : postProcessGLTF)(gltfData);
         const ctx = {
             src: src,
             entityId: options.entityId,
@@ -124,6 +133,7 @@ function parseGLTF(plugin, src, gltf, metaModelJSON, options, sceneModel, ok, er
             numObjects: 0,
             nodes: [],
             nextId: 0,
+            entityPerMesh: options.entityPerMesh,
             log: (msg) => {
                 plugin.log(msg);
             }
@@ -418,6 +428,49 @@ function loadDefaultScene(ctx) {
         });
     })(nodes);
 
+    if (ctx.entityPerMesh) {
+        const sceneIds = new Set();
+        (function createSceneMeshesAndEntities(nodes, parentId, parentMatrix, dep) {
+            return nodes.reduce(
+                (hadMesh, node) => {
+                    const baseId = node.name ?? "Node";
+                    const maybeGlobalize = id => ctx.globalizeObjectIds ? math.globalizeObjectId(ctx.sceneModel.id, id) : id;
+                    let entityId = maybeGlobalize(baseId);
+                    let nextPostfixId = 1;
+                    while (ctx.sceneModel.objects[entityId] || sceneIds.has(entityId)) {
+                        entityId = maybeGlobalize(`${baseId}.${(nextPostfixId++).toString().padStart(4, "0")}`);
+                    }
+                    sceneIds.add(entityId);
+                    const matrix = parseNodeMatrix(node, parentMatrix);
+
+                    const meshEntity = node.mesh && (function() {
+                        const meshIds = [ ];
+                        parseNodeMesh(node, ctx, matrix, meshIds);
+                        return (meshIds.length > 0) && ctx.sceneModel.createEntity({
+                            id:       entityId,
+                            meshIds:  meshIds,
+                            isObject: true
+                        });
+                    })();
+
+                    const hasMesh = (node.children && createSceneMeshesAndEntities(node.children, entityId, matrix, dep + 1)) || meshEntity;
+
+                    if (hasMesh && ctx.autoMetaModel) {
+                        ctx.metaObjects.push({
+                            id:     entityId,
+                            name:   entityId,
+                            type:   "Default",
+                            parent: parentId
+                        });
+                    }
+
+                    return hadMesh || hasMesh;
+                },
+                false);
+        })(nodes, ctx.sceneModel.id, null, 0);
+        return;
+    }
+
     // Create a SceneMesh for each mesh primitive, and a SceneModelEntity for the root node and each named node.
     const meshIdsStack = [];
     let meshIds = null;
@@ -426,11 +479,13 @@ function loadDefaultScene(ctx) {
             const nodeName = node.name;
             let entityId = (((nodeName !== undefined) && (nodeName !== null) && nodeName)
                             ||
-                            ((depth === 0) && ("entity-" + ctx.nextId++)));
-
+                            ((depth === 0) && ("Node." + String(ctx.nextId++).padStart(4, "0"))));
             if (entityId) {
+                entityId = ctx.globalizeObjectIds ? math.globalizeObjectId(ctx.sceneModel.id, entityId) : entityId;
+                
                 while (ctx.sceneModel.objects[entityId]) {
-                    entityId = "entity-" + ctx.nextId++;
+                    entityId = nodeName + "." + String(ctx.nextId++).padStart(4, "0");
+                    entityId = ctx.globalizeObjectIds ? math.globalizeObjectId(ctx.sceneModel.id, entityId) : entityId;
                 }
                 meshIdsStack.push(meshIds);
                 meshIds = [];
@@ -448,17 +503,16 @@ function loadDefaultScene(ctx) {
 
             if (entityId) {
                 if (meshIds.length > 0) {
-                    const globalId = ctx.globalizeObjectIds ? math.globalizeObjectId(ctx.sceneModel.id, entityId) : entityId;
                     ctx.sceneModel.createEntity({
-                        id: globalId,
+                        id: entityId,
                         meshIds: meshIds,
                         isObject: true
                     });
                     if (ctx.autoMetaModel) {
                         ctx.metaObjects.push({
-                            id: globalId,
+                            id: entityId,
                             type: "Default",
-                            name: globalId,
+                            name: nodeName ? nodeName : "Node",
                             parent: ctx.sceneModel.id
                         });
                     }
@@ -530,9 +584,6 @@ function parseNodeMesh(node, ctx, matrix, meshIds) {
     if (numPrimitives > 0) {
         for (let i = 0; i < numPrimitives; i++) {
             const primitive = mesh.primitives[i];
-            if (primitive.mode < 4) {
-                continue;
-            }
             const meshCfg = {
                 id: ctx.sceneModel.id + "." + ctx.numObjects++
             };
@@ -546,32 +597,6 @@ function parseNodeMesh(node, ctx, matrix, meshIds) {
             } else {
                 meshCfg.color = new Float32Array([1.0, 1.0, 1.0]);
                 meshCfg.opacity = 1.0;
-            }
-            const backfaces = ((ctx.backfaces !== false) || (material && material.doubleSided !== false));
-            switch (primitive.mode) {
-                case 0: // POINTS
-                    meshCfg.primitive = "points";
-                    break;
-                case 1: // LINES
-                    meshCfg.primitive = "lines";
-                    break;
-                case 2: // LINE_LOOP
-                    meshCfg.primitive = "lines";
-                    break;
-                case 3: // LINE_STRIP
-                    meshCfg.primitive = "lines";
-                    break;
-                case 4: // TRIANGLES
-                    meshCfg.primitive = backfaces ? "triangles" : "solid";
-                    break;
-                case 5: // TRIANGLE_STRIP
-                    meshCfg.primitive = backfaces ? "triangles" : "solid";
-                    break;
-                case 6: // TRIANGLE_FAN
-                    meshCfg.primitive = backfaces ? "triangles" : "solid";
-                    break;
-                default:
-                    meshCfg.primitive = backfaces ? "triangles" : "solid";
             }
             const POSITION = primitive.attributes.POSITION;
             if (!POSITION) {
@@ -592,6 +617,61 @@ function parseNodeMesh(node, ctx, matrix, meshIds) {
                 math.transformPositions3(matrix, meshCfg.localPositions, meshCfg.positions);
             } else { // eqiv to math.transformPositions3(math.identityMat4(), meshCfg.localPositions, meshCfg.positions);
                 meshCfg.positions.set(meshCfg.localPositions);
+            }
+            const linearize = closeLoop => {
+                const indices = meshCfg.indices || iota(meshCfg.localPositions.length / 3);
+                const len = indices.length;
+                const cnt = closeLoop ? len : (len - 1);
+                const linesIndices = new Uint32Array(cnt * 2);
+                for (let i = 0; i < cnt; ++i) {
+                    const idx = i * 2;
+                    linesIndices[idx]   = indices[i];
+                    linesIndices[idx+1] = indices[(i+1) % len];
+                }
+                meshCfg.indices = linesIndices;
+            };
+            const triangularize = getFirstPoint => {
+                const indices = meshCfg.indices || iota(meshCfg.localPositions.length / 3);
+                const len = indices.length;
+                const cnt = len - 2;
+                const trianglesIndices = new Uint32Array(cnt * 3);
+                for (let i = 0; i < cnt; ++i) {
+                    const idx = i * 3;
+                    trianglesIndices[idx]   = getFirstPoint(indices, i);
+                    trianglesIndices[idx+1] = indices[(i+1) % len];
+                    trianglesIndices[idx+2] = indices[(i+2) % len];
+                }
+                meshCfg.indices = trianglesIndices;
+            };
+            const backfaces = ((ctx.backfaces !== false) || (material && material.doubleSided !== false));
+            switch (primitive.mode) {
+                case 0: // POINTS
+                    meshCfg.primitive = "points";
+                    break;
+                case 1: // LINES
+                    meshCfg.primitive = "lines";
+                    break;
+                case 2: // LINE_LOOP
+                    meshCfg.primitive = "lines";
+                    linearize(true);
+                    break;
+                case 3: // LINE_STRIP
+                    meshCfg.primitive = "lines";
+                    linearize(false);
+                    break;
+                case 4: // TRIANGLES
+                    meshCfg.primitive = backfaces ? "triangles" : "solid";
+                    break;
+                case 5: // TRIANGLE_STRIP
+                    meshCfg.primitive = backfaces ? "triangles" : "solid";
+                    triangularize((indices, i) => indices[i]);
+                    break;
+                case 6: // TRIANGLE_FAN
+                    meshCfg.primitive = backfaces ? "triangles" : "solid";
+                    triangularize((indices, i) => indices[0]);
+                    break;
+                default:
+                    meshCfg.primitive = backfaces ? "triangles" : "solid";
             }
             const origin = math.vec3();
             const rtcNeeded = worldToRTCPositions(meshCfg.positions, meshCfg.positions, origin); // Small cellsize guarantees better accuracy

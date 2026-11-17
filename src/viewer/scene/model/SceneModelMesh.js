@@ -207,11 +207,6 @@ export class SceneModelMesh {
         this.layer.setOffset(this.portionId, offset);
     }
 
-    _testNewPosition(matrixNewPosition, pivot) {
-        this.layer.testNewPosition(matrixNewPosition, pivot);
-        // this.layer.destroy()
-    }
-
     _setHighlighted(entityFlags) {
         this.layer.setHighlighted(this.portionId, entityFlags, this._transparent);
     }
@@ -379,6 +374,9 @@ export class SceneModelMesh {
         return this._surfaceArea;
     }
 
+    /**
+     * @private
+     */
     set aabb(aabb) { // Called by SceneModel
         this._aabbLocal = aabb;
         if (this.origin) {
@@ -412,23 +410,12 @@ export class SceneModelMesh {
         return this._aabbWorld;
     }
 
-  rotate(conf) {
-    this.layer.rotate(conf);
-    }
-
-  translate(conf) {
-    this.layer.translate(conf);
-    }
-
-    destroy() {
-        this.model.scene._renderer.putPickID(this.pickId);
-        this.layer.destroy();
-    }
-
     /**
      * @private
      */
     _destroy() {
-      this.model.scene._renderer.putPickID(this.pickId);
+        this.model.scene._renderer.putPickID(this.pickId);
+
+        this.layer = null;
     }
 }

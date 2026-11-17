@@ -83,6 +83,24 @@ export declare type LoadGLTFModel = {
   performance?: boolean;
   /** When true, generate a single MetaObject that represents the entire glTF model, and a MetaObject for each entity within it. */
   autoMetaModel?: boolean;
+  /** Options to pass to loaders.gl parse method, eg. ````{ gltf: { excludeExtensions: { "KHR_texture_transform": false } } }````. */
+  parseOptions?: any;
+  /** Create an entity for each mesh, instead of grouping leaf meshes under their common entity. */
+  entityPerMesh?: boolean;
+  /**
+   * Alternative user-provided loaders.gl library.
+   * This feature has been tested with loaders.gl 4.3.4 version.
+   * Because loaders.gl is supplied externally, xeokit cannot guarantee compatibility with all loaders.gl versions.
+   */
+  loadersGl?: {
+    core: {
+      parse: (...args: any[]) => any;
+    };
+    gltf: {
+      GLTFLoader: any;
+      postProcessGLTF: (...args: any[]) => any;
+    };
+  };
 };
 
 /**

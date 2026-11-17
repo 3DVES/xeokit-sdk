@@ -9,7 +9,7 @@ export declare type AnnotationsPluginConfiguration = {
   markerHTML?: string;
   /** HTML text template for Annotation labels. Defaults to ````<div></div>````.  Ignored on {@link Annotation}s configured with a ````labelElementId````. */
   labelHTML?: string;
-  /** Container DOM element for markers and labels. Defaults to ````document.body````. */
+  /** Container DOM element for markers and labels. Defaults to ````document.body````, but different element should be specified to capture it with {@link Viewer.getSnapshotWithPlugins}. */
   container?: HTMLElement;
   /** Map of default values to insert into the HTML templates for the marker and label. */
   values?: { [key: string]: string | number };
@@ -117,34 +117,39 @@ export declare class AnnotationsPlugin extends Plugin {
    * Fires when a annotation is created.
    * @param {String} event The annotationCreated event
    * @param {Function} callback Callback fired on the event
+   * @returns {String} Subscription id
    */
-  on(event: "annotationCreated", callback: (annotationId: string)=> void): void;
+  on(event: "annotationCreated", callback: (annotationId: string)=> void): string;
 
   /**
    * Fires when a annotation is destroyed.
    * @param {String} event The annotationDestroyed event
    * @param {Function} callback Callback fired on the event
+   * @returns {String} Subscription id
    */
-  on(event: "annotationDestroyed", callback: (annotationId: string)=> void): void;
+  on(event: "annotationDestroyed", callback: (annotationId: string)=> void): string;
 
   /**
    * Fires when a mouse enters a annotation.
    * @param {String} event The markerMouseEnter event
    * @param {Function} callback Callback fired on the event
+   * @returns {String} Subscription id
    */
-   on(event: "markerMouseEnter", callback: (annotation: Annotation)=> void): void;
+   on(event: "markerMouseEnter", callback: (annotation: Annotation)=> void): string;
 
   /**
    * Fires when a mouse leave an annotation.
    * @param {String} event The markerMouseLeave event
    * @param {Function} callback Callback fired on the event
+   * @returns {String} Subscription id
    */
-  on(event: "markerMouseLeave", callback: (annotation: Annotation)=> void): void;
+  on(event: "markerMouseLeave", callback: (annotation: Annotation)=> void): string;
 
   /**
    * Fires when a mouse leave an annotation.
    * @param {String} event The markerClicked event
    * @param {Function} callback Callback fired on the event
+   * @returns {String} Subscription id
    */
-  on(event: "markerClicked", callback: (annotation: Annotation)=> void): void;
+  on(event: "markerClicked", callback: (annotation: Annotation)=> void): string;
 }

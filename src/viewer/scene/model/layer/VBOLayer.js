@@ -150,7 +150,8 @@ export class VBOLayer extends Layer {
                     });
 
                     return buf;
-                }
+                },
+                _clearToOptimizeGC: () => { portions.length = 0; }
             };
         };
 
@@ -477,12 +478,13 @@ export class VBOLayer extends Layer {
                               : (quantizePositions(buffer.positions.compileBuffer(Float64Array), modelAABB, positionsDecodeMatrix = math.mat4()))));
         const positionsBuf = positions && maybeCreateBuffer(positions, 3, gl.STATIC_DRAW);
         if (! instancing) {
-            portions.forEach(portion => {
-                if (portion.retainedGeometry) {
+            for (let i = 0; i < portions.length; ++i) { // WARNING: Replacing this for-loop by forEach increases memory consumption
+                const portion = portions[i];            // by not GCing `positions` arr, even if portion.retainedGeometry is false.
+                if (portion.retainedGeometry) {         // See the comment related to XCD-408 and XCD-424 below.
                     const start = 3 * portion.portionBase;
                     portion.retainedGeometry.quantizedPositions = positions.subarray(start, start + 3 * portion.portionSize);
                 }
-            });
+            }
         }
 
         const modelMatrixColBufs = instancing && buffer.modelMatrixCol.map(b => maybeCreateBuffer(b.compileBuffer(Float32Array), 4, gl.STATIC_DRAW, true));
@@ -521,6 +523,10 @@ export class VBOLayer extends Layer {
                          })());
 
         // Free up memory
+        // Optimization to free up memory (XCD-408 and XCD-424)
+        // The following line was added to assist GC in cleaning up some of the data. See also the `portions` loop above.
+        // A Chrome test with Lyon[1-9].xkt models loaded simultaneously showed a decrease of 538MB to 143MB.
+        Object.values(this._buffer).forEach(a => a._clearToOptimizeGC ? a._clearToOptimizeGC() : a.forEach(a => a._clearToOptimizeGC()));
         this._buffer = null;
 
         scratchMemory.acquire();
@@ -564,7 +570,6 @@ export class VBOLayer extends Layer {
 
         const solid = (primitive === "solid");
         return {
-            edgesColorOpaqueAllowed: () => true,
             solid: solid,
             sortId: (((primitive === "points") ? "Points" : ((primitive === "lines") ? "Lines" : "Triangles"))
                      + (instancing ? "Instancing" : "Batching") + "Layer" +
@@ -642,7 +647,6 @@ export class VBOLayer extends Layer {
                     }
                     origVec[3] = 1;
                     const sceneModelMatrix = model.matrix;
-                    math.mulMat4v4(sceneModelMatrix, origVec, origVec);
                     const positions = retainedGeometry.quantizedPositions;
                     const worldPos = tempVec4a;
                     for (let i = 0, len = positions.length; i < len; i += 3) {
@@ -654,8 +658,8 @@ export class VBOLayer extends Layer {
                             math.transformPoint3(retainedGeometry.matrix, worldPos, worldPos);
                         }
                         worldPos[3] = 1;
-                        math.mulMat4v4(sceneModelMatrix, worldPos, worldPos);
                         math.addVec3(origVec, worldPos, worldPos);
+                        math.mulMat4v4(sceneModelMatrix, worldPos, worldPos);
                         callback(worldPos);
                     }
                 }
@@ -887,8 +891,8 @@ export class VBOLayer extends Layer {
                             } else {    // triangles
                                 if (subGeometry && subGeometry.vertices) {
                                     return drawPoints;
-                                } else if (subGeometry && edgeIndicesBuf) {
-                                    return elementsDrawer(gl.LINES, edgeIndicesBuf);
+                                } else if (subGeometry) {
+                                    return edgeIndicesBuf ? elementsDrawer(gl.LINES, edgeIndicesBuf) : (() => { });
                                 } else {
                                     return elementsDrawer(gl.TRIANGLES, indicesBuf);
                                 }

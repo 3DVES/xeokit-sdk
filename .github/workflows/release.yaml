@@ -9,6 +9,10 @@ on:
         type: string
         default: 'master'
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+        
 jobs:
   release:
     permissions:
@@ -24,7 +28,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           always-auth: true
 
@@ -32,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npx rollup --config rollup.config.js; npx rollup --config rollup.minified.config.js
 
       - name: Get version from package.json
         id: version
@@ -46,7 +50,7 @@ jobs:
       - name: Commit and push dist files
         run: |
           git add -A
-          git commit -m "chore: Release v${{ steps.version.outputs.version }} dist files" || echo "No changes to commit"
+          git commit -m "chore: Release v${{ steps.version.outputs.version }} dist files and docs" || echo "No changes to commit"
           git push origin ${{ inputs.branch }}
 
       - name: Extract release notes from CHANGELOG.md
@@ -96,6 +100,4 @@ jobs:
             npm publish --access public --tag next
           else
             npm publish --access public
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          fi 

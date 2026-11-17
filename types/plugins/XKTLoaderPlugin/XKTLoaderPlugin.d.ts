@@ -1,5 +1,9 @@
 import {IFCObjectDefaults, Plugin, VBOSceneModel, Viewer} from "../../viewer";
 
+type ReuseGeometries =
+    | boolean
+    | ((geometryConfig: { instanceCount: number }) => boolean);
+
 export declare type XKTLoaderPluginConfiguration = {
     /** Optional ID for this plugin, so that we can find it within {@link Viewer.plugins}. */
     id?: string;
@@ -16,7 +20,7 @@ export declare type XKTLoaderPluginConfiguration = {
     /** When loading metadata and this is ````true````, will only load {@link Entity}s that have {@link MetaObject}s (that are not excluded). This is useful when we don't want Entitys in the Scene that are not represented within IFC navigation components, such as {@link TreeViewPlugin}. */
     excludeUnclassifiedObjects?: boolean;
     /** Indicates whether to enable geometry reuse */
-    reuseGeometries?: boolean;
+    reuseGeometries?: ReuseGeometries;
     /** Maximum geometry batch size, as number of vertices. */
     maxGeometryBatchSize?: number;
 };
@@ -32,9 +36,11 @@ export declare type LoadXKTModel = {
     metaModelSrc?: string;
     /** JSON model metadata, as an alternative to the ````metaModelSrc```` parameter. */
     metaModelData?: any;
-    /** Path or URL to a JSON manifest file that provides paths or URLs to ````.xkt```` files to load as parts of the model. Use this option to load models that have been split intomultiple XKT files. See [tutorial](https://www.notion.so/xeokit/Automatically-Splitting-Large-Models-for-Better-Performance-165fc022e94742cf966ee50003572259) for more info.*/
+    /** Whether to load metadata into ````MetaScene````, otherwise expose as ````SceneModel::metadata````. If provided a function, the function will be called with either ````metaModelSrc````'s contents, ````metaModelData```` value, or xkt's embedded metadata, and the function's return value will be used as ````metaModel.loadData````'s input. Defaults to `true`. */
+    loadIntoMetaScene?: boolean | ((metadata: any) => any);
+    /** Path or URL to a JSON manifest file that provides paths or URLs to ````.xkt```` files to load as parts of the model. Use this option to load models that have been split into multiple XKT files. See [tutorial](https://xeokit.io/blog/automatically-splitting-large-models-for-better-performance) for more info.*/
     manifestSrc?: any;
-    /** A JSON manifest object (as an alternative to a path or URL) that provides paths or URLs to ````.xkt```` files to load as parts of the model. Use this option to load models that have been split intomultiple XKT files. See [tutorial](https://www.notion.so/xeokit/Automatically-Splitting-Large-Models-for-Better-Performance-165fc022e94742cf966ee50003572259) for more info. */
+    /** A JSON manifest object (as an alternative to a path or URL) that provides paths or URLs to ````.xkt```` files to load as parts of the model. Use this option to load models that have been split into multiple XKT files. See [tutorial](https://xeokit.io/blog/automatically-splitting-large-models-for-better-performance) for more info. */
     manifest?: object;
     /** Map of initial default states for each loaded {@link Entity} that represents an object. Default value is {@link IFCObjectDefaults}. */
     objectDefaults?: object;
@@ -72,7 +78,7 @@ export declare type LoadXKTModel = {
      * all geometry instances into batches (````false````), and not use instancing to render them. Setting this ````false```` can significantly
      * improve Viewer performance for models that have excessive geometry reuse, but may also increases the amount of
      * browser and GPU memory used by the model. See [#769](https://github.com/xeokit/xeokit-sdk/issues/769) for more info. */
-    reuseGeometries?: boolean;
+    reuseGeometries?: ReuseGeometries;
     /** When ````true```` (default) use data textures (DTX), where appropriate, to
      * represent the returned model. Set false to always use vertex buffer objects (VBOs). Note that DTX is only applicable
      * to non-textured triangle meshes, and that VBOs are always used for meshes that have textures, line segments, or point
@@ -265,7 +271,7 @@ export declare class XKTLoaderPlugin extends Plugin {
      *
      * @type {Boolean}
      */
-    set reuseGeometries(arg: boolean);
+    set reuseGeometries(arg: ReuseGeometries);
 
     /**
      * Gets whether XKTLoaderPlugin enables geometry reuse when loading models.
@@ -274,7 +280,7 @@ export declare class XKTLoaderPlugin extends Plugin {
      *
      * @type {Boolean}
      */
-    get reuseGeometries(): boolean;
+    get reuseGeometries(): ReuseGeometries;
 
     /**
      * Gets the ````.xkt```` format versions supported by this XKTLoaderPlugin/

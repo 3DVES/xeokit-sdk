@@ -338,7 +338,7 @@ export const getRenderers = (function() {
             if (primitive === "points") {
                 cache[sceneId] = {
                     colorRenderers:     { "sao-": { "vertex": lazy((vars, geo, c) => c(makeColorProgram(vars, geo, null, null))) } },
-                    occlusionRenderer:  lazy((vars, geo, c) => c(OcclusionProgram(vars, scene.logarithmicDepthBufferEnabled))),
+                    occlusionRenderer:  lazy((vars, geo, c) => c(OcclusionProgram(vars))),
                     pickDepthRenderer:  lazy(makePickDepthProgram),
                     pickMeshRenderer:   lazy(makePickMeshProgram),
                     // VBOBatchingPointsShadowRenderer has been implemented by 14e973df6268369b00baef60e468939e062ac320,
@@ -400,7 +400,7 @@ export const getRenderers = (function() {
                         uniform: lazy((vars, geo, c) => c(EdgesProgram(vars, geo, scene.logarithmicDepthBufferEnabled, true)),  { vertices: false }),
                         vertex:  lazy((vars, geo, c) => c(EdgesProgram(vars, geo, scene.logarithmicDepthBufferEnabled, false)), { vertices: false })
                     },
-                    occlusionRenderer:       lazy((vars, geo, c) => c(OcclusionProgram(vars, scene.logarithmicDepthBufferEnabled))),
+                    occlusionRenderer:       lazy((vars, geo, c) => c(OcclusionProgram(vars))),
                     pickDepthRenderer:       eager(makePickDepthProgram),
                     pickMeshRenderer:        eager(makePickMeshProgram),
                     pickNormalsFlatRenderer: eager((vars, geo, c) => makePickNormalsProgram(vars, geo, c, true)),
@@ -501,6 +501,15 @@ export class Layer {
     }
 
     aabbChanged() { this._aabbDirty = true; }
+
+    getAABB() {
+        if (this._aabbDirty) { // Per-layer AABB for best RTC accuracy
+            math.collapseAABB3(this._aabb);
+            this._meshes.forEach(m => math.expandAABB3(this._aabb, m.aabb));
+            this._aabbDirty = false;
+        }
+        return this._aabb;
+    }
 
     __drawLayer(renderFlags, frameCtx, renderer, pass) {
         if ((this._countsByFlag[ENTITY_FLAGS.CULLED].count < this._portions.length) && (this._countsByFlag[ENTITY_FLAGS.VISIBLE].count > 0)) {
@@ -608,9 +617,7 @@ export class Layer {
     }
 
     drawEdgesColorOpaque(renderFlags, frameCtx) {
-        if (this._compiledPortions.edgesColorOpaqueAllowed()) {
-            this.__drawVertexEdges(renderFlags, frameCtx, RENDER_PASSES.EDGES_COLOR_OPAQUE);
-        }
+        this.__drawVertexEdges(renderFlags, frameCtx, RENDER_PASSES.EDGES_COLOR_OPAQUE);
     }
 
     drawEdgesColorTransparent(renderFlags, frameCtx) {
@@ -671,13 +678,7 @@ export class Layer {
     drawSnap(renderFlags, frameCtx, isSnapInit) {
         frameCtx.snapPickOrigin = [0, 0, 0];
 
-        if (this._aabbDirty) { // Per-layer AABB for best RTC accuracy
-            math.collapseAABB3(this._aabb);
-            this._meshes.forEach(m => math.expandAABB3(this._aabb, m.aabb));
-            this._aabbDirty = false;
-        }
-
-        const aabb = this._aabb;
+        const aabb = this.getAABB();
         frameCtx.snapPickCoordinateScale = math.mulVec3Scalar(
             safeInvVec3([ aabb[3] - aabb[0], aabb[4] - aabb[1], aabb[5] - aabb[2] ]),
             math.MAX_INT);
