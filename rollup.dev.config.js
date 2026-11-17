@@ -1,3 +1,4 @@
+import { browserOnlyLazPerf } from './rollup.browser-only.js';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 
 export default {
@@ -10,6 +11,7 @@ export default {
         }
     ],
     plugins: [
+        browserOnlyLazPerf(),
         nodeResolve({
             browser: true,
             preferBuiltins: false

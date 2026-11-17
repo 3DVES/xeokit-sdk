@@ -142,11 +142,25 @@ class MetaScene {
             propertySets: []
         });
 
-        metaModel.loadData(metaModelData);
+        metaModel.loadData(metaModelData, options);
 
         metaModel.finalize();
 
         return metaModel;
+    }
+
+    /**
+     * Destroys this MetaScene.
+     */
+    _destroy() {
+        this.viewer = null;
+        this.scene = null;
+        this.metaModels = {};
+        this.propertySets = {};
+        this.metaObjects = {};
+        this.metaObjectsByType = {};
+        this.rootMetaObjects = {};
+        this._eventSubs = {};
     }
 
     /**

@@ -1,3 +1,4 @@
+import { browserOnlyLazPerf } from './rollup.browser-only.js';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
@@ -51,6 +52,7 @@ export default {
         }
     ],
     plugins: [
+        browserOnlyLazPerf(),
         nodeResolve({
             browser: true,
             preferBuiltins: false

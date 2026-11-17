@@ -2,17 +2,15 @@
 
 [![npm version](https://badge.fury.io/js/%40xeokit%2Fxeokit-sdk.svg)](https://badge.fury.io/js/%40xeokit%2Fxeokit-sdk)
 [![](https://data.jsdelivr.com/v1/package/npm/@xeokit/xeokit-sdk/badge)](https://www.jsdelivr.com/package/npm/@xeokit/xeokit-sdk)
-[![@xeokit/xeokit-sdk](https://snyk.io/advisor/npm-package/@xeokit/xeokit-sdk/badge.svg)](/advisor/npm-package/@xeokit/xeokit-sdk)
 [![CodeSee](https://github.com/xeokit/xeokit-sdk/actions/workflows/codesee-arch-diagram.yml/badge.svg)](https://github.com/xeokit/xeokit-sdk/actions/workflows/codesee-arch-diagram.yml)
 
-[xeokit](http://xeokit.io) is a JavaScript software development kit created by [xeolabs](http://xeolabs.com) and supported by [Creoox AG](https://creoox.com) for viewing
-high-detail, full-precision 3D engineering and BIM models in the browser.
+[xeokit](http://xeokit.io) is a JavaScript software development kit by [Creoox AG](https://creoox.com) for viewing high-detail, full-precision 3D engineering and BIM models in the browser.
 
 ## Resources
 
 * [xeokit.io](https://xeokit.io/)
 * [Examples](http://xeokit.github.io/xeokit-sdk/examples/)
-* [Guides](https://www.notion.so/xeokit/xeokit-Documentation-4598591fcedb4889bf8896750651f74e)
+* [Blog](https://xeokit.io/blog)
 * [API Docs](https://xeokit.github.io/xeokit-sdk/docs/)
 * [Features](https://xeokit.io/index.html?foo=1#features)
 * [Changelog](https://github.com/xeokit/xeokit-sdk/blob/master/CHANGELOG.md)
@@ -107,6 +105,11 @@ and [OBJ](https://xeokit.github.io/xeokit-sdk/docs/class/src/plugins/OBJLoaderPl
 </script>
 </html>
 ````
+---
+## Deprecation Notice: ES5 and CJS Builds
+
+Starting from **September 2026**, the ES5/UMD and CommonJS builds will no longer be included in the npm package. Maintaining ES5 compatibility requires extensive transpilation and polyfilling that is increasingly difficult to sustain as the codebase evolves. Going forward, only the ES module builds (`xeokit-sdk.es.js` and `xeokit-sdk.min.es.js`) will be provided, which are compatible with all modern browsers and bundlers.
+
 ---
 ## 📜 Licensing & Commercial Use
 

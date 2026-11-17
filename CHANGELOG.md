@@ -1,5 +1,164 @@
 ## xeokit-sdk Changelog
 
+
+# [v2.6.114](https://github.com/xeokit/xeokit-sdk/compare/v2.6.113...v2.6.114)
+
+### 02 Sep 2026
+
+-  Remove examples and unused assets, which have been migrated to the https://github.com/xeokit/examples/ repository
+-  XEOK-505 Extend XKTLoaderPlugin with optional metadata adapter [#2083](https://github.com/xeokit/xeokit-sdk/pull/2083)
+
+# [v2.6.113](https://github.com/xeokit/xeokit-sdk/compare/v2.6.112...v2.6.113)
+
+### 20 Aug 2026
+
+-  XCD-505 Adding _renderer to Canvas [#2073](https://github.com/xeokit/xeokit-sdk/pull/2073)
+-  Update README
+-  Adds ".js" extension in the import [#2079](https://github.com/xeokit/xeokit-sdk/pull/2079)
+-  XCD-514 Remove getLogDepth from OcclusionProgram.js [#2080](https://github.com/xeokit/xeokit-sdk/pull/2080)
+
+
+# [v2.6.112](https://github.com/xeokit/xeokit-sdk/compare/v2.6.111...v2.6.112)
+
+### 25 Jun 2026
+
+-  XCD-492 Fix ViewCullPlugin not unculling objects [#2062](https://github.com/xeokit/xeokit-sdk/pull/2062)
+-  XEOK-465 Extend reuseGeometries to function type [#2063](https://github.com/xeokit/xeokit-sdk/pull/2063)
+-  Fix the reuseGeometries param description [#2068](https://github.com/xeokit/xeokit-sdk/pull/2068)
+-  #2066 Fixing typings in MetaModel [#2067](https://github.com/xeokit/xeokit-sdk/pull/2067)
+-  XEOK-444 Support GLTFLoaderPlugin::load::loadersGl parameter to load alternative loaders.gl version [#2035](https://github.com/xeokit/xeokit-sdk/pull/2035)
+
+
+# [v2.6.111](https://github.com/xeokit/xeokit-sdk/compare/v2.6.109...v2.6.110)
+
+### 27 May 2026
+
+-  XEOK-458 Add a warning to build and dev-build scripts about upcoming deprecation [#2059](https://github.com/xeokit/xeokit-sdk/pull/2059)
+-  XEOK-462 Expose metadata to be available for custom tree view implementations [#2060](https://github.com/xeokit/xeokit-sdk/pull/2060)
+-  XCD-491 Remove additional camera.pitch and camera.yaw manipulation [#2061](https://github.com/xeokit/xeokit-sdk/pull/2061)
+
+
+# [v2.6.109](https://github.com/xeokit/xeokit-sdk/compare/v2.6.108...v2.6.109)
+
+### 07 May 2026
+
+-  XCD-463 Allow edges rendering for DTX & Logarithmic depth buffers [#2038](https://github.com/xeokit/xeokit-sdk/pull/2038)
+-  XCD-482 Add information about plugin container being necessary for the getSnapshotWithPlugins [#2050](https://github.com/xeokit/xeokit-sdk/pull/2050)
+-  XEOK-445 Publish example with splitting objects [#2049](https://github.com/xeokit/xeokit-sdk/pull/2049)
+-  XCD-485 Handle GLTF loops, strips, fans [#2051](https://github.com/xeokit/xeokit-sdk/pull/2051)
+-  XEOK-453 Separate portions with normals from portions without normals [#2052](https://github.com/xeokit/xeokit-sdk/pull/2052)
+-  XEOK-454 Fix addMousePressListener and addTouchPressListener type declarations [#2053](https://github.com/xeokit/xeokit-sdk/pull/2053)
+
+
+# [v2.6.108](https://github.com/xeokit/xeokit-sdk/compare/v2.6.107...v2.6.108)
+
+### 01 Apr 2026
+
+-  XEOK-437 Adjust ts types [#2026](https://github.com/xeokit/xeokit-sdk/pull/2026)
+-  XCD-466 Improving performance of viewer.destroy() [#2029](https://github.com/xeokit/xeokit-sdk/pull/2029)
+-  XEOK-439 Fix Label3D-SectionPlane culling [#2030](https://github.com/xeokit/xeokit-sdk/pull/2030)
+
+
+# [v2.6.107](https://github.com/xeokit/xeokit-sdk/compare/v2.6.106...v2.6.107)
+
+### 12 Mar 2026
+
+-  XCD-454 Test layer's AABB against active section planes for early cull optimization [#2024](https://github.com/xeokit/xeokit-sdk/pull/2024)
+
+
+# [v2.6.106](https://github.com/xeokit/xeokit-sdk/compare/v2.6.105...v2.6.106)
+
+### 20 Feb 2026
+
+-  XCD-406 Billboard (so far excluded) PickMeshShaderSource, PickTriangleShaderSource, ShadowShaderSource [#2022](https://github.com/xeokit/xeokit-sdk/pull/2022)
+-  XCD-432 Instantiate transformedAndRecompressedPositions per mesh [#2021](https://github.com/xeokit/xeokit-sdk/pull/2021)
+
+
+# [v2.6.105](https://github.com/xeokit/xeokit-sdk/compare/v2.6.104...v2.6.105)
+
+### 28 Jan 2026
+
+-  XCD-436 Implenent GLTFLoaderPlugin::load's entityPerMesh option [#2017](https://github.com/xeokit/xeokit-sdk/pull/2017)
+-  CHANGE Remove skipping of gltf points and lines - this will make GLTF "points" and "lines" appear - before this change they wouldn't
+
+
+# [v2.6.104](https://github.com/xeokit/xeokit-sdk/compare/v2.6.103...v2.6.104)
+
+### 14 Jan 2026
+
+-  XCD-426 Use actual node name for name of meta object [#2014](https://github.com/xeokit/xeokit-sdk/pull/2014)
+
+
+# [v2.6.103](https://github.com/xeokit/xeokit-sdk/compare/v2.6.102...v2.6.103)
+
+### 08 Jan 2026
+
+-  XCD-426 Moving globalizing objects' ids next to entityId creation [#2010](https://github.com/xeokit/xeokit-sdk/pull/2010)
+
+
+# [v2.6.102](https://github.com/xeokit/xeokit-sdk/compare/v2.6.101...v2.6.102)
+
+### 05 Jan 2026
+
+-  XCD-415 Add more descriptive explanation of the Curve's length getter [#2004](https://github.com/xeokit/xeokit-sdk/pull/2004)
+-  XCD-426 Change "entity-" prefix into nodeName [#2007](https://github.com/xeokit/xeokit-sdk/pull/2007)
+-  XEOK-386 Documentation refactors, external link replacement [#2008](https://github.com/xeokit/xeokit-sdk/pull/2008)
+-  XCD-427 Apply model.matrix only once inside getEachVertex [#2009](https://github.com/xeokit/xeokit-sdk/pull/2009)
+
+
+# [v2.6.101](https://github.com/xeokit/xeokit-sdk/compare/v2.6.100...v2.6.101)
+
+### 22 December 2025
+
+-  XCD-408 and XCD-424 Improve GC to lower memory consumption [#2006](https://github.com/xeokit/xeokit-sdk/pull/2006)
+-  Math improvements (implement math.mulVec3, fix geometryCompressionUtils.createPositionsDecodeMatrix) [#2003](https://github.com/xeokit/xeokit-sdk/pull/2003)
+
+
+# [v2.6.100](https://github.com/xeokit/xeokit-sdk/compare/v2.6.99...v2.6.100)
+
+### 12 December 2025
+
+-  Implement math.addVec2, math.compareVec2, math.mulVec2 [#2000](https://github.com/xeokit/xeokit-sdk/pull/2000)
+-  XCD-419 Introduce Texture::maxAnisotropy parameter and use for NavCubePlugin [#2001](https://github.com/xeokit/xeokit-sdk/pull/2001)
+
+
+# [v2.6.99](https://github.com/xeokit/xeokit-sdk/compare/v2.6.98...v2.6.99)
+
+### 09 December 2025
+
+-  Add point cloud heatmap example [#1972](https://github.com/xeokit/xeokit-sdk/pull/1972)
+-  XEOK-402 Pass GLTFLoaderPlugin::load::params::parseOptions to loaders.gl::parse [#1999](https://github.com/xeokit/xeokit-sdk/pull/1999)
+
+
+# [v2.6.98](https://github.com/xeokit/xeokit-sdk/compare/v2.6.97...v2.6.98)
+
+### 08 December 2025
+
+-  #1949 Component's _renderer reference removal [#1996](https://github.com/xeokit/xeokit-sdk/pull/1996)
+-  IFC examples list refactor [#1997](https://github.com/xeokit/xeokit-sdk/pull/1997)
+-  XEOK-401 Make SnapProgram::vPickColor non-flat to fix stability issue [#1998](https://github.com/xeokit/xeokit-sdk/pull/1998)
+-  fix: out of range indices in decomposeMat4 [#1994](https://github.com/xeokit/xeokit-sdk/pull/1994)
+
+
+# [v2.6.97](https://github.com/xeokit/xeokit-sdk/compare/v2.6.96...v2.6.97)
+
+### 03 December 2025
+
+-  XEOK-399 Implement Layer's AABB-based frustum culling [#1992](https://github.com/xeokit/xeokit-sdk/pull/1992)
+
+
+# [v2.6.96](https://github.com/xeokit/xeokit-sdk/compare/v2.6.95...v2.6.96)
+
+### 02 December 2025
+
+-  XEOK-385 Make VBO vClippable non-flat to fix stability issue [#1986](https://github.com/xeokit/xeokit-sdk/pull/1986)
+-  Implemented Ifcopenshellplugin without Worker [#1984](https://github.com/xeokit/xeokit-sdk/pull/1984) and [#1987](https://github.com/xeokit/xeokit-sdk/pull/1987)
+-  #1976 Camera control key map types update [#1988](https://github.com/xeokit/xeokit-sdk/pull/1988)
+-  #1949 viewer.destroy memory leak improvement by SceneModelMesh layer reference removal [#1989](https://github.com/xeokit/xeokit-sdk/pull/1989)
+-  XEOK-394 Fix quantizePositions' positionsDecodeMatrix for flat axis-aligned surface mesh [#1990](https://github.com/xeokit/xeokit-sdk/pull/1990)
+-  Return full submeshes from makeSectionPlaneSlicer [#1991](https://github.com/xeokit/xeokit-sdk/pull/1991)
+
+
 # [v2.6.95](https://github.com/xeokit/xeokit-sdk/compare/v2.6.94...v2.6.95)
 
 ### 18 November 2025

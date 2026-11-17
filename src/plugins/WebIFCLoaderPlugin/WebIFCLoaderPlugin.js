@@ -888,13 +888,17 @@ class WebIFCLoaderPlugin extends Plugin {
     }
 
     _parseGeometry(ctx) {
-        this._ifcAPI.StreamAllMeshes(ctx.modelID, (flatMesh) => {
+        const createdObjectIds = new Set();
+        const createObjectFromFlatMesh = (flatMesh) => {
             // TODO: Can we do geometry reuse with web-ifc?
             const flatMeshExpressID = flatMesh.expressID;
             const placedGeometries = flatMesh.geometries;
             const meshIds = [];
             const properties = this._ifcAPI.GetLine(ctx.modelID, flatMeshExpressID);
             const globalId = properties.GlobalId.value;
+            if (createdObjectIds.has(globalId)) {
+                return;
+            }
             if (ctx.loadMetadata) {
                 const metaObjectId = globalId;
                 const metaObject = ctx.metaObjects[metaObjectId];
@@ -952,8 +956,21 @@ class WebIFCLoaderPlugin extends Plugin {
                 meshIds: meshIds,
                 isObject: true
             });
+            createdObjectIds.add(globalId);
             ctx.stats.numObjects++;
-        });
+        };
+        this._ifcAPI.StreamAllMeshes(ctx.modelID, createObjectFromFlatMesh);
+        this._parseSpaceGeometry(ctx, createObjectFromFlatMesh);
+    }
+
+    _parseSpaceGeometry(ctx, createObjectFromFlatMesh) {
+        const spaceIds = this._ifcAPI.GetLineIDsWithType(ctx.modelID, this._webIFC.IFCSPACE);
+        for (let spaceIndex = 0, spaceCount = spaceIds.size(); spaceIndex < spaceCount; spaceIndex++) {
+            const flatMesh = this._ifcAPI.GetFlatMesh(ctx.modelID, spaceIds.get(spaceIndex));
+            if (flatMesh && flatMesh.geometries.size() > 0) {
+                createObjectFromFlatMesh(flatMesh);
+            }
+        }
     }
 }
 

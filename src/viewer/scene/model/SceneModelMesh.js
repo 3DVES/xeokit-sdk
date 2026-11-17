@@ -209,7 +209,6 @@ export class SceneModelMesh {
 
     _testNewPosition(matrixNewPosition, pivot) {
         this.layer.testNewPosition(matrixNewPosition, pivot);
-        // this.layer.destroy()
     }
 
     _setHighlighted(entityFlags) {
@@ -379,6 +378,9 @@ export class SceneModelMesh {
         return this._surfaceArea;
     }
 
+    /**
+     * @private
+     */
     set aabb(aabb) { // Called by SceneModel
         this._aabbLocal = aabb;
         if (this.origin) {
@@ -412,12 +414,12 @@ export class SceneModelMesh {
         return this._aabbWorld;
     }
 
-  rotate(conf) {
-    this.layer.rotate(conf);
+    rotate(conf) {
+        this.layer.rotate(conf);
     }
 
-  translate(conf) {
-    this.layer.translate(conf);
+    translate(conf) {
+        this.layer.translate(conf);
     }
 
     destroy() {
@@ -429,6 +431,8 @@ export class SceneModelMesh {
      * @private
      */
     _destroy() {
-      this.model.scene._renderer.putPickID(this.pickId);
+        this.model.scene._renderer.putPickID(this.pickId);
+
+        this.layer = null;
     }
 }

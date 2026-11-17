@@ -126,3 +126,24 @@ export declare interface ITreeViewRenderService {
    */
   setHighlighted(nodeId: string, highlighted: boolean): void;
 }
+
+/**
+ * The default {@link ITreeViewRenderService} used by {@link TreeViewPlugin}.
+ */
+export declare class RenderService implements ITreeViewRenderService {
+  constructor(treeViewContainer: HTMLElement);
+  createRootNode(): HTMLElement;
+  createNodeElement(node: TreeViewNode, expandHandler: genericHandler, checkHandler: genericHandler, contextmenuHandler: genericHandler, titleClickHandler: genericHandler): HTMLElement;
+  createDisabledNodeElement(rootName: string): HTMLElement;
+  addChildren(element: HTMLElement, nodes: Array<HTMLElement>): void;
+  expand(element: HTMLElement, expandHandler: genericHandler, collapseHandler: genericHandler): void;
+  collapse(element: HTMLElement, expandHandler: genericHandler, collapseHandler: genericHandler): void;
+  isExpanded(element: HTMLElement): boolean;
+  getId(element: HTMLElement): string | undefined;
+  getIdFromCheckbox(element: HTMLElement): string;
+  getSwitchElement(nodeId: string): HTMLElement | null;
+  isChecked(element: HTMLElement): boolean;
+  setCheckbox(nodeId: string, checked: boolean, indeterminate?: boolean): void;
+  setXRayed(nodeId: string, xrayed: boolean): void;
+  setHighlighted(nodeId: string, highlighted: boolean): void;
+}
