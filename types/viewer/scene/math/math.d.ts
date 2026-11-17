@@ -112,9 +112,10 @@ declare const math: {
 
   transformMatrix: (args: {
     matrix: number[];
-    rotation: number[];
-    translation: number[];
-    scale: number[];
+    quaternion?: number[];
+    position?: number[];
+    scale?: number[];
+    pivot?: number[];
   }) => number[];
 };
 

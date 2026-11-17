@@ -162,6 +162,13 @@ export declare class DistanceMeasurementsPlugin extends Plugin {
   get measurements(): { [key:string]: DistanceMeasurement };
 
   /**
+   * Shows all or hides the distance label of each {@link DistanceMeasurement}.
+   *
+   * @param {Boolean} labelsShown Whether or not to show the labels.
+   */
+  setLabelsShown(labelsShown: boolean): void;
+
+  /**
    * Creates a {@link DistanceMeasurement}.
    *
    * The DistanceMeasurement is then registered by {@link DistanceMeasurement.id} in {@link DistanceMeasurementsPlugin.measurements}.
