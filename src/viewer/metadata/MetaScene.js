@@ -142,7 +142,7 @@ class MetaScene {
             propertySets: []
         });
 
-        metaModel.loadData(metaModelData);
+        metaModel.loadData(metaModelData, options);
 
         metaModel.finalize();
 
