@@ -207,6 +207,10 @@ export class SceneModelMesh {
         this.layer.setOffset(this.portionId, offset);
     }
 
+    _testNewPosition(matrixNewPosition, pivot) {
+        this.layer.testNewPosition(matrixNewPosition, pivot);
+    }
+
     _setHighlighted(entityFlags) {
         this.layer.setHighlighted(this.portionId, entityFlags, this._transparent);
     }
@@ -408,6 +412,19 @@ export class SceneModelMesh {
             this._aabbWorldDirty = false;
         }
         return this._aabbWorld;
+    }
+
+    rotate(conf) {
+        this.layer.rotate(conf);
+    }
+
+    translate(conf) {
+        this.layer.translate(conf);
+    }
+
+    destroy() {
+        this.model.scene._renderer.putPickID(this.pickId);
+        this.layer.destroy();
     }
 
     /**

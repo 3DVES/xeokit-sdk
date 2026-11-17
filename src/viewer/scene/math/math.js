@@ -613,24 +613,6 @@ const math = {
         dest[3] = u[3] * v[3];
         return dest;
     },
-  /**
-   * Multiplies one three-element vector by another.
-   * @method mulVec3
-   * @static
-   * @param {Array(Number)} u First vector
-   * @param {Array(Number)} v Second vector
-   * @param  {Array(Number)} [dest] Destination vector
-   * @return {Array(Number)} dest if specified, u otherwise
-   */
-  mulVec3(u, v, dest) {
-    if (!dest) {
-      dest = u;
-    }
-    dest[0] = u[0] * v[0];
-    dest[1] = u[1] * v[1];
-    dest[2] = u[2] * v[2];
-    return dest;
-  },
 
     /**
      * Multiplies each element of a four-element vector by a scalar.

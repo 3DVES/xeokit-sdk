@@ -623,6 +623,7 @@ class XKTLoaderPlugin extends Plugin {
      * textures within the XKT. Only required when the XKT is version 10 or later, and contains KTX2 textures.
      */
     constructor(viewer, cfg = {}) {
+
         super("XKTLoader", viewer, cfg);
 
         this._maxGeometryBatchSize = cfg.maxGeometryBatchSize;
@@ -1100,6 +1101,7 @@ class XKTLoaderPlugin extends Plugin {
                 }
             }
 
+
         } else {
 
             if (params.src) {
@@ -1163,8 +1165,8 @@ class XKTLoaderPlugin extends Plugin {
                                 this.scheduleTask(loadNext, 200);
                             }, error);
                         }
-                        loadNext();
                     }
+                    loadNext();
                 };
                 if (params.manifest) {
                     const manifestData = params.manifest;
@@ -1219,7 +1221,6 @@ class XKTLoaderPlugin extends Plugin {
         if (sceneModel.destroyed) {
             return;
         }
-
         const dataView = new DataView(arrayBuffer);
         const dataArray = new Uint8Array(arrayBuffer);
         const firstUint = dataView.getUint32(0, true);
