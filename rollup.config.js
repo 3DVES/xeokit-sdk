@@ -1,3 +1,4 @@
+import { browserOnlyLazPerf } from './rollup.browser-only.js';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import { readFileSync } from 'fs';
@@ -50,6 +51,7 @@ export default {
         }
     ],
     plugins: [
+        browserOnlyLazPerf(),
         nodeResolve({
             browser: true,
             preferBuiltins: false
